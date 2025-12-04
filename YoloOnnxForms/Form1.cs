@@ -85,7 +85,7 @@ namespace YoloOnnxForms
             comboBoxCamera.SelectedIndex = 0;
         }
 
-        // =========================================================
+        // ========================================================
         // BOTÃO: ESCOLHER PASTA DE LOG (btnPastaArquivoLog)
         // =========================================================
         private void btnPastaArquivoLog_Click(object sender, EventArgs e)
