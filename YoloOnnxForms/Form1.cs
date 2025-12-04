@@ -609,7 +609,7 @@ namespace YoloOnnxForms
         }
 
         private void btnPastaArquivoLog_Click_1(object sender, EventArgs e)
-        {
+        { 
 
         }
     }
