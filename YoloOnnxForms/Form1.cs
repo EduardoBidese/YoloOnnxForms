@@ -5,15 +5,20 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
+
 namespace YoloOnnxForms
 {
+
     public partial class Form1 : Form
     {
+        private AppConfig _config;
         // ========= CONFIGURAÇÃO DO PYTHON =========
 
         private const string PythonExePath =
@@ -24,6 +29,14 @@ namespace YoloOnnxForms
 
         private const string YoloPtModelPath =
             @"C:\Users\epuhl\source\repos\YoloOnnxForms\YoloOnnxForms\Models\best.pt";  // AJUSTAR
+
+        // Caminho do arquivo JSON com as configurações
+        private static readonly string SettingsPath =
+            Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "detection_settings.json");
+
+        // Instância das configurações
+        private DetectionSettings _settings = new DetectionSettings();
+
 
         // Processo Python em execução (vídeo ou câmera)
         private Process? _pythonProcess;
@@ -45,6 +58,8 @@ namespace YoloOnnxForms
         public Form1()
         {
             InitializeComponent();
+            CarregarSettings();   // <-- novo
+            _config = ConfigService.Load();
 
             // Pasta padrão: subpasta "Logs" ao lado do executável
             _logsDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
@@ -59,6 +74,47 @@ namespace YoloOnnxForms
         private void Form1_Load(object sender, EventArgs e)
         {
         }
+
+        private void CarregarSettings()
+        {
+            try
+            {
+                if (File.Exists(SettingsPath))
+                {
+                    var json = File.ReadAllText(SettingsPath);
+                    var cfg = JsonSerializer.Deserialize<DetectionSettings>(json);
+                    if (cfg != null)
+                        _settings = cfg;
+                }
+                else
+                {
+                    _settings = new DetectionSettings();
+                }
+            }
+            catch
+            {
+                _settings = new DetectionSettings();
+            }
+        }
+
+        private void SalvarSettings()
+        {
+            try
+            {
+                var json = JsonSerializer.Serialize(
+                    _settings,
+                    new JsonSerializerOptions { WriteIndented = true });
+
+                File.WriteAllText(SettingsPath, json);
+            }
+            catch
+            {
+                // se der erro pra salvar, ignora por enquanto
+            }
+        }
+
+
+
 
         // =========================================================
         // SOBRESCREVE FECHAMENTO DO FORM → GARANTE QUE FECHA PYTHON/CÂMERA
@@ -254,7 +310,8 @@ namespace YoloOnnxForms
                     $"-u \"{PythonScriptPath}\" " +
                     $"--model \"{YoloPtModelPath}\" " +
                     $"--video \"{mediaPath}\" " +
-                    $"--conf {conf.ToString(CultureInfo.InvariantCulture)}",
+                    $"--conf {conf.ToString(CultureInfo.InvariantCulture)} " +  // <--- ESPAÇO AQUI
+                    $"--settings \"{SettingsPath}\"",                           //                          // 
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -610,6 +667,28 @@ namespace YoloOnnxForms
 
         private void btnPastaArquivoLog_Click_1(object sender, EventArgs e)
         { 
+
+        }
+
+        private void btnCongif_Click(object sender, EventArgs e)
+        {
+            using (var frm = new ConfigForm(_settings))
+            {
+                if (frm.ShowDialog(this) == DialogResult.OK)
+                {
+                    _settings = frm.Settings;
+                    SalvarSettings();
+
+                    textBoxConf.Text = _settings.Confidence
+                        .ToString("0.00", CultureInfo.InvariantCulture);
+
+                    lblStatus.Text = "Configurações atualizadas.";
+                }
+            }
+        }
+
+        private void Form1_Load_1(object sender, EventArgs e)
+        {
 
         }
     }

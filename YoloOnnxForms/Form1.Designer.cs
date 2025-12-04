@@ -38,6 +38,7 @@
             btnOpenCamera = new Button();
             comboBoxCamera = new ComboBox();
             btnPastaArquivoLog = new Button();
+            btnCongif = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -130,15 +131,24 @@
             btnPastaArquivoLog.TabIndex = 10;
             btnPastaArquivoLog.Text = "Pasta do Arquivo Log";
             btnPastaArquivoLog.UseVisualStyleBackColor = true;
-           
-            this.btnPastaArquivoLog.Click += new System.EventHandler(this.btnPastaArquivoLog_Click);
-
+            btnPastaArquivoLog.Click += btnPastaArquivoLog_Click;
+            // 
+            // btnCongif
+            // 
+            btnCongif.Location = new Point(912, 132);
+            btnCongif.Name = "btnCongif";
+            btnCongif.Size = new Size(186, 29);
+            btnCongif.TabIndex = 11;
+            btnCongif.Text = "Configurações";
+            btnCongif.UseVisualStyleBackColor = true;
+            btnCongif.Click += btnCongif_Click;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1112, 512);
+            Controls.Add(btnCongif);
             Controls.Add(btnPastaArquivoLog);
             Controls.Add(comboBoxCamera);
             Controls.Add(btnOpenCamera);
@@ -151,6 +161,7 @@
             Controls.Add(pictureBox1);
             Name = "Form1";
             Text = "Form1";
+            Load += Form1_Load_1;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -168,5 +179,6 @@
         private Button btnOpenCamera;
         private ComboBox comboBoxCamera;
         private Button btnPastaArquivoLog;
+        private Button btnCongif;
     }
 }

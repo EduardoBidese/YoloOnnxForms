@@ -1,0 +1,9 @@
+{
+  "Confidence": 0.5,
+  "ByteTrackActivation": 0.3,
+  "LostTrackBuffer": 30,
+  "MatchingThreshold": 0.5,
+  "MinConsecutiveFrames": 10,
+  "UseClassFilter": false,
+  "Classes": []
+}
